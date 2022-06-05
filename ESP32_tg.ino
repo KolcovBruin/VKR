@@ -41,29 +41,107 @@ struct Lvl_user
     String access;
     String pass;
 };
+Lvl_user List_lvl[3];
 /////////
 struct user
 {
   String usr_id;
+  String access;
   user *next;
 };
+///////////////
+user *el;
+user *cr_el;
+short int cnt_usr;
+void new_user(String user_id,String text)
+{
+  Serial.println("newUser");
+  if(cnt_usr==0)
+  {
+    el->usr_id=user_id;
+    el->access=auth(user_id,text);
+  }
+
+  cnt_usr++;
+}
+
+String auth(String user_id,String text)
+{
+  
+  bot.sendMessage(chat_id, "Вы еще не авторизованы. Войдите в систему или прочитайте информацию", "");
+  
+  if (text="/authorization")
+  {
+    
+  }
+  if (text="/help")
+  {
+    
+  }
+  
+}
+
 
 // Handle what happens when you receive new messages
 void handleNewMessages(int numNewMessages) {
+  
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
-
+bool find=0;
+short int cnt=0;
   for (int i=0; i<numNewMessages; i++) {
     // Chat id of the requester
     String chat_id = String(bot.messages[i].chat_id);
    // if (chat_id != CHAT_ID){
-    //  bot.sendMessage(chat_id, "Unauthorized user", "");
-    //  continue;
-   // }
+      //bot.sendMessage(chat_id, "Unauthorized user", "");
+     // continue;
+    //}
     
     // Print the received message
     String text = bot.messages[i].text;
     Serial.println(text);
+    //////////
+    while (find!=1&&cnt!=cnt_usr)
+    {
+      Serial.println(cnt);
+      Serial.println("cnt");
+      cnt++;
+      cr_el=el;
+      if (chat_id==cr_el->usr_id)
+      {
+        find=1;
+        //Serial.println("Yes");
+        //Serial.println(find);
+       // Serial.println("Yes");
+      }
+      //cr_el=cr_el->next;
+    }
+    if (cnt_usr==0||find==0)
+    {
+      new_user(chat_id,text);
+      Serial.println(cnt_usr);
+      Serial.println(find);
+      Serial.println("NO");
+    }
+    if (find==1)
+    {
+      find =0;
+      if (cr_el->access=="admin")
+      {
+        bot.sendMessage(chat_id, "Hi,Admin", "");
+      }
+    }
+    //if(chat_id!=el->usr_id)
+   // {
+    //  el->next=NULL;
+     // el->usr_id=chat_id;
+     // Serial.println(el->usr_id);
+   // }
+    
+
+
+    
+    ///////////
 
     String from_name = bot.messages[i].from_name;
 
@@ -130,9 +208,24 @@ void setup() {
   }
   // Print ESP32 Local IP Address
   Serial.println(WiFi.localIP());
+
+  
+  List_lvl[0].access="admin";
+  List_lvl[0].pass="2244";
+  List_lvl[1].access="Engineer";
+  List_lvl[1].pass="1134";
+  List_lvl[2].access="Operator";
+  List_lvl[2].pass="1111";
+
+ cnt_usr++;
+  el=new user;
+  el->usr_id="247504167";
+  el->access="admin";
+  cr_el=new user;
 }
 
 void loop() {
+    
     while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi");
@@ -148,4 +241,9 @@ void loop() {
     }
     lastTimeBotRan = millis();
   }
+//el->usr_id="1111";
+
+
+
+  
 }
