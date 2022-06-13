@@ -1,3 +1,6 @@
+#include <ESP32Servo.h>
+
+
 
 
 #include <DHT.h>
@@ -17,6 +20,7 @@
 //const char* ssid = "iPhone 6s (Григорий)";
 //const char* password = "12345678";
 DHT dht(15, DHT11);
+Servo myservo;
 const char* ssid = "Huawei v1";
 const char* password = "18021978";
 //short int state=0;
@@ -268,11 +272,18 @@ short int cnt=0;
     //Serial.println("t");
     //Serial.println(t);
     bot.sendMessage(chat_id, Temperature, "");
+    myservo.write(90); 
+    
   }
   if (text == "/hum")
   {
     //Serial.println(h);
     bot.sendMessage(chat_id, Humidity, "");
+  }
+  if (digitalRead(4))
+  {
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Объект близко", "");
   }
     
   }
@@ -281,7 +292,7 @@ short int cnt=0;
 void setup() {
   Serial.begin(115200);
 dht.begin();
-
+myservo.attach(13);
 
   #ifdef ESP8266
     configTime(0, 0, "pool.ntp.org");      // get UTC time via NTP
