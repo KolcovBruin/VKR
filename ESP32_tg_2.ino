@@ -1,3 +1,8 @@
+
+
+#include <DHT.h>
+#include <DHT_U.h>
+
 #ifdef ESP32
   #include <WiFi.h>
 #else
@@ -6,10 +11,12 @@
 #include <WiFiClientSecure.h>
 #include <UniversalTelegramBot.h>   // Universal Telegram Bot Library written by Brian Lough: https://github.com/witnessmenow/Universal-Arduino-Telegram-Bot
 #include <ArduinoJson.h>
+//#include "DHT.h"
 
 // Replace with your network credentials
 //const char* ssid = "iPhone 6s (Григорий)";
 //const char* password = "12345678";
+DHT dht(15, DHT11);
 const char* ssid = "Huawei v1";
 const char* password = "18021978";
 //short int state=0;
@@ -251,11 +258,30 @@ short int cnt=0;
         bot.sendMessage(chat_id, "LED is OFF", "");
       }
     }
+      Serial.println("ttttt");
+  String Humidity = String(dht.readHumidity(),2); //Измеряем влажность
+  //float h = 20;
+  String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
+  //float t = 40;
+  if (text == "/temp")
+  {
+    //Serial.println("t");
+    //Serial.println(t);
+    bot.sendMessage(chat_id, Temperature, "");
+  }
+  if (text == "/hum")
+  {
+    //Serial.println(h);
+    bot.sendMessage(chat_id, Humidity, "");
+  }
+    
   }
 }
 
 void setup() {
   Serial.begin(115200);
+dht.begin();
+
 
   #ifdef ESP8266
     configTime(0, 0, "pool.ntp.org");      // get UTC time via NTP
