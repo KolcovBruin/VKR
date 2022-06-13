@@ -57,12 +57,14 @@ user *el;
 user *cr_el;
 user *lst_el;
 short int cnt_usr;
+
 void new_user(String user_id)
 {
   Serial.println("newUser");
+  //delay(10000);
   if(cnt_usr==0)
   {
-    el=new user;
+    //el=new user;
     el->usr_id=user_id;
     el->state=1;
     cr_el=el;
@@ -75,10 +77,10 @@ void new_user(String user_id)
     cr_el->next=lst_el;
     lst_el->usr_id=user_id;
     lst_el->state=1;
-    
+     cnt_usr++;
   }
   bot.sendMessage(user_id, "Вы еще не авторизованы. Введите Логин", "");
-  cnt_usr++;
+ 
 }
 
 void auth(String user_id,String text)
@@ -89,7 +91,7 @@ void auth(String user_id,String text)
      cr_el->login=text;
   }
   
-  if ((cr_el->login==List_lvl[0].login && text==List_lvl[0].pass)||(cr_el->login==List_lvl[1].login && text==List_lvl[0].pass)||(cr_el->login==List_lvl[2].login && text==List_lvl[0].pass))
+  if ((cr_el->login==List_lvl[0].login && text==List_lvl[0].pass)||(cr_el->login==List_lvl[1].login && text==List_lvl[1].pass)||(cr_el->login==List_lvl[2].login && text==List_lvl[2].pass))
   {
     String message;
     message="Вы авторизовались как: ";
@@ -105,9 +107,10 @@ void handleNewMessages(int numNewMessages) {
   
   Serial.println("handleNewMessages");
   Serial.println(String(numNewMessages));
-bool find=0;
-short int cnt=0;
+
   for (int i=0; i<numNewMessages; i++) {
+    bool find=0;
+short int cnt=0;
     // Chat id of the requester
     String chat_id = String(bot.messages[i].chat_id);
    // if (chat_id != CHAT_ID){
@@ -119,25 +122,42 @@ short int cnt=0;
     String text = bot.messages[i].text;
     Serial.println(text);
     //////////
+    cr_el=el;
     while (find!=1&&cnt!=cnt_usr)
     {
+
+      Serial.println(cr_el->usr_id);
+      //Serial.println(cnt);
       cnt++;
-      cr_el=el;
+      
+      //cr_el=el;
       if (chat_id==cr_el->usr_id)
       {
         find=1;
+        Serial.println("find");
+        Serial.println(cr_el->usr_id);
         break;
       }
       if (cnt!=cnt_usr)
       {
       cr_el=cr_el->next;
       }
+     // Serial.println("find");
+     // Serial.println(find);
     }
-    
-    switch(cr_el->state)
+   // cnt=0;
+   Serial.println("find");
+   Serial.println(find);
+   if (find ==0)
+   {
+    new_user(chat_id);
+   }
+    else
+    {
+      switch(cr_el->state)
     {
       case 0:
-      new_user(chat_id);
+      //new_user(chat_id);
       break;
       case 1:
       
@@ -147,6 +167,9 @@ short int cnt=0;
       //IoT();
       break;
     }
+    }
+   
+    
     cnt=0;
     //while (find!=1&&cnt!=cnt_usr)
    // {
@@ -251,24 +274,26 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi..");
-     WiFi.begin(ssid, password);
+     //WiFi.begin(ssid, password);
   }
-   Print ESP32 Local IP Address
+   //Print ESP32 Local IP Address
   Serial.println(WiFi.localIP());
 
   
-  List_lvl[0].login="admin";
+  List_lvl[0].login="Admin";
   List_lvl[0].pass="2244";
   List_lvl[1].login="Engineer";
   List_lvl[1].pass="1134";
   List_lvl[2].login="Operator";
   List_lvl[2].pass="1111";
 
- //cnt_usr++;
-  //el=new user;
+ cnt_usr++;
+  el=new user;
+  cr_el=el;
   //el->usr_id="247504167";
   //el->access="admin";
   //cr_el=new user;
+  
 }
 
 void loop() {
