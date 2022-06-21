@@ -117,7 +117,7 @@ void message (String chat_id,String text)
     }
       Serial.println("ttttt");
 
-  String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
+ // String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
   //float t = 40;
   if (text == "/temp1")
   {
@@ -189,11 +189,11 @@ void message (String chat_id,String text)
   
     if (digitalRead(16)){
     //Serial.println(h);
-    bot.sendMessage(chat_id, "Высокий уровень СО", "");
+    bot.sendMessage(chat_id, "Высокий уровень Вибраций", "");
     }
     if (!digitalRead(16)){
     //Serial.println(h);
-    bot.sendMessage(chat_id, "Нормальный уровень СО", "");
+    bot.sendMessage(chat_id, "Нормальный уровень Вибраций", "");
     }
   }
   if (text == "Уровень шума")
@@ -231,6 +231,21 @@ void auth(String user_id,String text)
     message+=cr_el->login;
     bot.sendMessage(user_id, message, "");
     cr_el->state=2;
+    if (cr_el->login=="Admin")
+    {
+        String keyboardJson = "[[\"/temp1\", \"/hum1\"],[\"/temp2\", \"/hum2\"],[\"Объект 1\",\"Объект 2\"],[\"Уровень СО\"],[\"Вибрации\"],[\"Уровень шума\"]]";
+        bot.sendMessageWithReplyKeyboard(user_id, "Вам доступен набор команд", "", keyboardJson, true);
+    }
+    if (cr_el->login=="Engineer")
+    {
+        String keyboardJson = "[[\"/temp1\", \"/hum1\"],[\"/temp2\", \"/hum2\"],[\"Объект 1\",\"Объект 2\"]]";
+        bot.sendMessageWithReplyKeyboard(user_id, "Вам доступен набор команд", "", keyboardJson, true);
+    }
+    if (cr_el->login=="Operator")
+    {
+        String keyboardJson = "[[\"/temp1\", \"/hum1\"],[\"/temp2\", \"/hum2\"]]";
+        bot.sendMessageWithReplyKeyboard(user_id, "Вам доступен набор команд", "", keyboardJson, true);
+    }
   }
   
 }
@@ -316,8 +331,7 @@ short int cnt=0;
       
      // bot.sendMessage(chat_id, welcome, "");
 
-     // String keyboardJson = "[[\"/led_on\", \"выкл\"],[\"/state\"]]";
-     // bot.sendMessageWithReplyKeyboard(chat_id, "Choose from one of the following options", "", keyboardJson, true);
+   
 
       keyboardJson = "[[{ \"text\" : \"Авторизация\", \"callback_data\" : \"/Авторизация\" }],[{ \"text\" : \"Информация\", \"callback_data\" : \"Информация\" }]]";
         bot.sendMessageWithInlineKeyboard(chat_id, welcome, "", keyboardJson);
