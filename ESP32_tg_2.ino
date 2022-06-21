@@ -18,7 +18,7 @@
 //const char* ssid = "iPhone 6s (Григорий)";
 //const char* password = "12345678";
 DHT dht(15, DHT11);
-DHT dht_2(2, DHT11);
+DHT dht_2(15, DHT11);
 String keyboardJson;
 Servo myservo;
 const char* ssid = "Huawei v1";
@@ -92,6 +92,128 @@ void new_user(String user_id)
   }
   bot.sendMessage(user_id, "Вы еще не авторизованы. Введите Логин", "");
  
+}
+void message (String chat_id,String text)
+{
+  if (text == "/led_on") {
+      bot.sendMessage(chat_id, "LED state set to ON", "");
+      ledState = HIGH;
+      digitalWrite(ledPin, ledState);
+    }
+    
+    if (text == "выкл") {
+      bot.sendMessage(chat_id, "LED state set to OFF", "");
+      ledState = LOW;
+      digitalWrite(ledPin, ledState);
+    }
+    
+    if (text == "/state") {
+      if (digitalRead(ledPin)){
+        bot.sendMessage(chat_id, "LED is ON", "");
+      }
+      else{
+        bot.sendMessage(chat_id, "LED is OFF", "");
+      }
+    }
+      Serial.println("ttttt");
+
+  String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
+  //float t = 40;
+  if (text == "/temp1")
+  {
+    String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
+    bot.sendMessage(chat_id, Temperature, "");
+    myservo.write(90); 
+    
+  }
+  if (text == "/hum1")
+  {
+      String Humidity = String(dht.readHumidity(),2); //Измеряем влажность
+    bot.sendMessage(chat_id, Humidity, "");
+  }
+  if (text == "/temp2")
+  {
+    String Temperature = String(dht_2.readTemperature(),2); //Измеряем температуру
+    bot.sendMessage(chat_id, Temperature, "");
+    myservo.write(90); 
+    
+  }
+  if (text == "/hum2")
+  {
+    String Humidity = String(dht_2.readHumidity(),2); //Измеряем влажность
+    bot.sendMessage(chat_id, Humidity, "");
+  }
+  if (text=="Объект 1")
+  {
+    if (digitalRead(1)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Объект №1 близко", "");
+    }
+    if (!digitalRead(1)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Объект №1 далеко", "");
+    }
+  }
+  if (text=="Объект 2")
+  {
+    if (digitalRead(3)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Объект №2 близко", "");
+    }
+    if (!digitalRead(3)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Объект №2 далеко", "");
+    }
+  }
+  if (text == "Уровень СО")
+  {
+   // String Humidity = String(dht_2.readHumidity(),2); //Измеряем влажность
+   String LV_CO="Уровень СО: ";
+  // LV_CO+=analogRead(13);
+  LV_CO+=20;
+ 
+    bot.sendMessage(chat_id, LV_CO, "");
+    if (digitalRead(5)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Высокий уровень СО", "");
+    }
+    if (!digitalRead(5)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Нормальный уровень СО", "");
+    }
+  }
+
+  if (text == "Вибрации")
+  {
+   // String Humidity = String(dht_2.readHumidity(),2); //Измеряем влажность
+  
+    if (digitalRead(16)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Высокий уровень СО", "");
+    }
+    if (!digitalRead(16)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Нормальный уровень СО", "");
+    }
+  }
+  if (text == "Уровень шума")
+  {
+   // String Humidity = String(dht_2.readHumidity(),2); //Измеряем влажность
+   String LV_S="Уровень звука: ";
+  // LV_CO+=analogRead(13);
+  LV_S+=40;
+    bot.sendMessage(chat_id, LV_S, "");
+    if (digitalRead(5)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Высокий уровень шума", "");
+    }
+    if (!digitalRead(5)){
+    //Serial.println(h);
+    bot.sendMessage(chat_id, "Нормальный уровень шума", "");
+    }
+  }
+  //////
+  
 }
 
 void auth(String user_id,String text)
@@ -176,54 +298,14 @@ short int cnt=0;
       auth(chat_id,text);
       break;
       case 2:
-      //IoT();
+      message(chat_id,text);
       break;
     }
     }
    
     
     cnt=0;
-    //while (find!=1&&cnt!=cnt_usr)
-   // {
-    ///  Serial.println(cnt);
-    //  Serial.println("cnt");
-     // cnt++;
-     // cr_el=el;
-     // if (chat_id==cr_el->usr_id)
-     // {
-     //   find=1;
-        //Serial.println("Yes");
-        //Serial.println(find);
-       // Serial.println("Yes");
-    //  }
-      //cr_el=cr_el->next;
-   // }
-   // if (cnt_usr==0||find==0)
-   // {
-    //  new_user(chat_id,text);
-    //  Serial.println(cnt_usr);
-    //  Serial.println(find);
-    //  Serial.println("NO");
-   // }
-    //if (find==1)
-    //{
-     // find =0;
-      //if (cr_el->access=="admin")
-      //{
-      //  bot.sendMessage(chat_id, "Hi,Admin", "");
-     // }
-   // }
-    //if(chat_id!=el->usr_id)
-   // {
-    //  el->next=NULL;
-     // el->usr_id=chat_id;
-     // Serial.println(el->usr_id);
-   // }
     
-
-
-    
-    ///////////
 
     String from_name = bot.messages[i].from_name;
 
@@ -237,53 +319,11 @@ short int cnt=0;
      // String keyboardJson = "[[\"/led_on\", \"выкл\"],[\"/state\"]]";
      // bot.sendMessageWithReplyKeyboard(chat_id, "Choose from one of the following options", "", keyboardJson, true);
 
-      keyboardJson = "[[{ \"text\" : \"Авторизация\", \"callback_data\" : \"/Авторизация\" }],[{ \"text\" : \"Информация\", \"callback_data\" : \"/Информация\" }]]";
+      keyboardJson = "[[{ \"text\" : \"Авторизация\", \"callback_data\" : \"/Авторизация\" }],[{ \"text\" : \"Информация\", \"callback_data\" : \"Информация\" }]]";
         bot.sendMessageWithInlineKeyboard(chat_id, welcome, "", keyboardJson);
     }
 
-    if (text == "/led_on") {
-      bot.sendMessage(chat_id, "LED state set to ON", "");
-      ledState = HIGH;
-      digitalWrite(ledPin, ledState);
-    }
     
-    if (text == "выкл") {
-      bot.sendMessage(chat_id, "LED state set to OFF", "");
-      ledState = LOW;
-      digitalWrite(ledPin, ledState);
-    }
-    
-    if (text == "/state") {
-      if (digitalRead(ledPin)){
-        bot.sendMessage(chat_id, "LED is ON", "");
-      }
-      else{
-        bot.sendMessage(chat_id, "LED is OFF", "");
-      }
-    }
-      Serial.println("ttttt");
-  String Humidity = String(dht.readHumidity(),2); //Измеряем влажность
-  //float h = 20;
-  String Temperature = String(dht.readTemperature(),2); //Измеряем температуру
-  //float t = 40;
-  if (text == "/temp")
-  {
-    //Serial.println("t");
-    //Serial.println(t);
-    bot.sendMessage(chat_id, Temperature, "");
-    myservo.write(90); 
-    
-  }
-  if (text == "/hum")
-  {
-    //Serial.println(h);
-    bot.sendMessage(chat_id, Humidity, "");
-  }
-  if (text=="Объект 1")
-  {
-    //Serial.println(h);
-    bot.sendMessage(chat_id, "Объект близко", "");
-  }
     
   }
 }
@@ -291,6 +331,7 @@ short int cnt=0;
 void setup() {
   Serial.begin(115200);
 dht.begin();
+dht_2.begin();
 myservo.attach(13);
 
   #ifdef ESP8266
@@ -326,9 +367,7 @@ myservo.attach(13);
  cnt_usr++;
   el=new user;
   cr_el=el;
-  //el->usr_id="247504167";
-  //el->access="admin";
-  //cr_el=new user;
+
   
 }
 
@@ -349,7 +388,7 @@ void loop() {
     }
     lastTimeBotRan = millis();
   }
-//el->usr_id="1111";
+
 
 
 
