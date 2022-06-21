@@ -1,8 +1,6 @@
 #include <ESP32Servo.h>
 
 
-
-
 #include <DHT.h>
 #include <DHT_U.h>
 
@@ -20,6 +18,8 @@
 //const char* ssid = "iPhone 6s (Григорий)";
 //const char* password = "12345678";
 DHT dht(15, DHT11);
+DHT dht_2(2, DHT11);
+String keyboardJson;
 Servo myservo;
 const char* ssid = "Huawei v1";
 const char* password = "18021978";
@@ -108,6 +108,7 @@ void auth(String user_id,String text)
     message="Вы авторизовались как: ";
     message+=cr_el->login;
     bot.sendMessage(user_id, message, "");
+    cr_el->state=2;
   }
   
 }
@@ -227,19 +228,17 @@ short int cnt=0;
     String from_name = bot.messages[i].from_name;
 
     if (text == "/start") {
-      String welcome = "Welcome, " + from_name + ".\n";
-      welcome += "Use the following commands to control your outputs.\n\n";
-      welcome += "/led_on to turn GPIO ON \n";
-      welcome += "/led_off to turn GPIO OFF \n";
-      welcome += "/state to request current GPIO state \n";
+      String welcome = "Добро пожаловать, " + from_name + ".\n";
+      welcome += "Для дальнейшего использования необходимо пройти аутентификацию.\n\n";
+      welcome += "Дополнительную инфоомацию можно получить в разделе меню: Инфо \n";
       
-      bot.sendMessage(chat_id, welcome, "");
+     // bot.sendMessage(chat_id, welcome, "");
 
-      String keyboardJson = "[[\"/led_on\", \"выкл\"],[\"/state\"]]";
-      bot.sendMessageWithReplyKeyboard(chat_id, "Choose from one of the following options", "", keyboardJson, true);
+     // String keyboardJson = "[[\"/led_on\", \"выкл\"],[\"/state\"]]";
+     // bot.sendMessageWithReplyKeyboard(chat_id, "Choose from one of the following options", "", keyboardJson, true);
 
-      keyboardJson = "[[{ \"text\" : \"Go to Google\", \"url\" : \"https://www.google.com\" }],[{ \"text\" : \"Send\", \"callback_data\" : \"выкл\" }]]";
-        bot.sendMessageWithInlineKeyboard(chat_id, "Choose from one of the following options", "", keyboardJson);
+      keyboardJson = "[[{ \"text\" : \"Авторизация\", \"callback_data\" : \"/Авторизация\" }],[{ \"text\" : \"Информация\", \"callback_data\" : \"/Информация\" }]]";
+        bot.sendMessageWithInlineKeyboard(chat_id, welcome, "", keyboardJson);
     }
 
     if (text == "/led_on") {
@@ -280,7 +279,7 @@ short int cnt=0;
     //Serial.println(h);
     bot.sendMessage(chat_id, Humidity, "");
   }
-  if (digitalRead(4))
+  if (text=="Объект 1")
   {
     //Serial.println(h);
     bot.sendMessage(chat_id, "Объект близко", "");
